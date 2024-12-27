@@ -13,7 +13,7 @@
 // Exchange this to a string that identifies your game mode.
 // DM, TDM and CTF are reserved for teeworlds original modes.
 // DDraceNetwork and TestDDraceNetwork are used by DDNet.
-#define GAME_TYPE_NAME "Горячая картошка"
+#define GAME_TYPE_NAME "ГорячаяКартошка"
 
 CGameControllerBomb::CGameControllerBomb(class CGameContext *pGameServer) :
 	IGameController(pGameServer), m_Teams(pGameServer)
@@ -77,7 +77,7 @@ void CGameControllerBomb::OnPlayerConnect(CPlayer *pPlayer)
 	{
 		m_aPlayers[pPlayer->GetCid()].m_Score = 0;
 		char aBuf[512];
-		str_format(aBuf, sizeof(aBuf), "'%s' зашел на сервер %s", Server()->ClientName(ClientId), GetTeamName(pPlayer->GetTeam()));
+		str_format(aBuf, sizeof(aBuf), "'%s' зашел на сервер и стал %s", Server()->ClientName(ClientId), GetTeamName(pPlayer->GetTeam()));
 		GameServer()->SendChat(-1, TEAM_ALL, aBuf);
 		GameServer()->SendChatTarget(ClientId, "Горячая картошка");
 	}
@@ -461,10 +461,10 @@ void CGameControllerBomb::EndBombRound(bool RealEnd)
 		}
 
 		EndRound();
-		//DoWarmup(3);
+		DoWarmup(1);
 		m_RoundActive = false;
 		EndRound();
-		//DoWarmup(3);
+		DoWarmup(1);
 		for(auto &aPlayer : m_aPlayers)
 		{
 			if(aPlayer.m_State == STATE_ALIVE)
