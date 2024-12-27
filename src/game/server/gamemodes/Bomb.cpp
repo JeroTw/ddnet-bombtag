@@ -13,7 +13,7 @@
 // Exchange this to a string that identifies your game mode.
 // DM, TDM and CTF are reserved for teeworlds original modes.
 // DDraceNetwork and TestDDraceNetwork are used by DDNet.
-#define GAME_TYPE_NAME "BOMB"
+#define GAME_TYPE_NAME "Горячая картошка"
 
 CGameControllerBomb::CGameControllerBomb(class CGameContext *pGameServer) :
 	IGameController(pGameServer), m_Teams(pGameServer)
@@ -59,7 +59,7 @@ int CGameControllerBomb::OnCharacterDeath(CCharacter *pVictim, CPlayer *pKiller,
 
 	if(m_aPlayers[ClientId].m_State > STATE_ACTIVE && m_RoundActive)
 	{
-		GameServer()->SendBroadcast("You will automatically rejoin the game when the round is over", ClientId);
+		GameServer()->SendBroadcast("Вас автоматически переподключит, когда закончится раунд.", ClientId);
 		m_aPlayers[ClientId].m_State = STATE_ACTIVE;
 	}
 	return 0;
@@ -77,13 +77,13 @@ void CGameControllerBomb::OnPlayerConnect(CPlayer *pPlayer)
 	{
 		m_aPlayers[pPlayer->GetCid()].m_Score = 0;
 		char aBuf[512];
-		str_format(aBuf, sizeof(aBuf), "'%s' entered and joined the %s", Server()->ClientName(ClientId), GetTeamName(pPlayer->GetTeam()));
+		str_format(aBuf, sizeof(aBuf), "'%s' зашел на сервер %s", Server()->ClientName(ClientId), GetTeamName(pPlayer->GetTeam()));
 		GameServer()->SendChat(-1, TEAM_ALL, aBuf);
-		GameServer()->SendChatTarget(ClientId, "BOMB Mod. Source code: https://github.com/furo321/ddnet-bombtag");
+		GameServer()->SendChatTarget(ClientId, "Горячая картошка");
 	}
 	if(m_RoundActive && m_aPlayers[ClientId].m_State != STATE_SPECTATING)
 	{
-		GameServer()->SendBroadcast("There's currently a game in progress, you'll join once the round is over!", ClientId);
+		GameServer()->SendBroadcast("Сейчас идет игра! Вы появитесь, когда она закончится.", ClientId);
 	}
 	SetSkin(pPlayer);
 	pPlayer->m_Score = m_aPlayers[pPlayer->GetCid()].m_Score;
@@ -119,15 +119,15 @@ void CGameControllerBomb::Tick()
 	{
 		int Sequence = Server()->Tick() % (SERVER_TICK_SPEED * 3);
 		if(Sequence == 50)
-			GameServer()->SendBroadcast("Waiting for players.", -1);
+			GameServer()->SendBroadcast("Ждем игроков.", -1);
 		else if(Sequence == 100)
-			GameServer()->SendBroadcast("Waiting for players..", -1);
+			GameServer()->SendBroadcast("Ждем игроков..", -1);
 		else if(Sequence == 0)
-			GameServer()->SendBroadcast("Waiting for players...", -1);
+			GameServer()->SendBroadcast("Ждем игроков...", -1);
 	}
 	if(!m_RoundActive && AmountOfPlayers(STATE_ACTIVE) + AmountOfPlayers(STATE_ALIVE) > 1 && !m_Warmup)
 	{
-		GameServer()->SendBroadcast("Game started", -1);
+		GameServer()->SendBroadcast("Игра началась", -1);
 		StartBombRound();
 	}
 	DoWinCheck();
@@ -242,7 +242,7 @@ void CGameControllerBomb::MakeBomb(int ClientId, int Ticks)
 		pChr->SetWeapon(g_Config.m_BombtagBombWeapon);
 	}
 
-	GameServer()->SendBroadcast("You are the new bomb!\nHit another player before the time runs out!", ClientId);
+	GameServer()->SendBroadcast("У тебя бомба!\nХуярь пока у тебя есть время!", ClientId);
 }
 
 int CGameControllerBomb::GetAutoTeam(int NotThisId)
@@ -266,13 +266,13 @@ bool CGameControllerBomb::CanJoinTeam(int Team, int NotThisId, char *pErrorReaso
 	{
 		m_aPlayers[NotThisId].m_State = STATE_SPECTATING;
 		m_aPlayers[NotThisId].m_Bomb = false;
-		str_copy(pErrorReason, "You are a spectator now\nYou won't join when a new round begins", ErrorReasonSize);
+		str_copy(pErrorReason, "Вы теперь наблюдатель\nВы не подключитесь к новой игре.", ErrorReasonSize);
 		return true;
 	}
 	else
 	{
 		m_aPlayers[NotThisId].m_State = STATE_ACTIVE;
-		str_copy(pErrorReason, "You will join the game when the round is over", ErrorReasonSize);
+		str_copy(pErrorReason, "Вы подключитесь к новой игре когда раунд кончится.", ErrorReasonSize);
 		return false;
 	}
 }
@@ -436,7 +436,7 @@ void CGameControllerBomb::EndBombRound(bool RealEnd)
 			if(m_aPlayers[i].m_State == STATE_ALIVE)
 			{
 				char aBuf[128];
-				str_format(aBuf, sizeof(aBuf), "'%s' won the round!", Server()->ClientName(i));
+				str_format(aBuf, sizeof(aBuf), "'%s' выиграл раунд!", Server()->ClientName(i));
 				GameServer()->SendChat(-1, TEAM_ALL, aBuf);
 				m_aPlayers[i].m_Score += g_Config.m_BombtagScoreForWinning;
 				GameServer()->m_apPlayers[i]->m_Score = m_aPlayers[i].m_Score;
@@ -445,7 +445,7 @@ void CGameControllerBomb::EndBombRound(bool RealEnd)
 					const char *pLine = GameServer()->Server()->GetMysteryRoundLine();
 					if(pLine)
 					{
-						GameServer()->SendChat(-1, TEAM_ALL, "MYSTERY ROUND!");
+						GameServer()->SendChat(-1, TEAM_ALL, "ПИЗДА БОБРУ!");
 						GameServer()->Console()->ExecuteFile(g_Config.m_SvMysteryRoundsResetFileName);
 						GameServer()->Console()->ExecuteLine(pLine);
 						m_WasMysteryRound = true;
@@ -461,10 +461,10 @@ void CGameControllerBomb::EndBombRound(bool RealEnd)
 		}
 
 		EndRound();
-		DoWarmup(3);
+		//DoWarmup(3);
 		m_RoundActive = false;
 		EndRound();
-		DoWarmup(3);
+		//DoWarmup(3);
 		for(auto &aPlayer : m_aPlayers)
 		{
 			if(aPlayer.m_State == STATE_ALIVE)
@@ -492,7 +492,7 @@ void CGameControllerBomb::ExplodeBomb(int ClientId)
 void CGameControllerBomb::EliminatePlayer(int ClientId)
 {
 	char aBuf[128];
-	str_format(aBuf, sizeof(aBuf), "'%s' eliminated!", Server()->ClientName(ClientId));
+	str_format(aBuf, sizeof(aBuf), "'%s' взорвался!", Server()->ClientName(ClientId));
 	GameServer()->SendChat(-1, TEAM_ALL, aBuf);
 
 	m_aPlayers[ClientId].m_Bomb = false;
