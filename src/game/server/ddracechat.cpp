@@ -67,7 +67,7 @@ void CGameContext::ConInfo(IConsole::IResult *pResult, void *pUserData)
 {
 	CGameContext *pSelf = (CGameContext *)pUserData;
 	pSelf->Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "chatresp",
-		"BOMB Mod. Version: " GAME_VERSION);
+		"Горячая картошка. Версия: " GAME_VERSION);
 	if(GIT_SHORTREV_HASH)
 	{
 		char aBuf[64];
@@ -75,9 +75,9 @@ void CGameContext::ConInfo(IConsole::IResult *pResult, void *pUserData)
 		pSelf->Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "chatresp", aBuf);
 	}
 	pSelf->Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "chatresp",
-		"Source code: https://github.com/furo321/ddnet-bombtag");
+		"Владелец сервера: t.me/cugadese");
 	pSelf->Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "chatresp",
-		"For more info: /cmdlist");
+		"Я килибик");
 }
 
 void CGameContext::ConList(IConsole::IResult *pResult, void *pUserData)
