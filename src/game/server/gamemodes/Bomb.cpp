@@ -1,4 +1,4 @@
-#include "ZombieMode.h"
+#include "Bomb.h"
 
 #include <engine/shared/config.h>
 #include <game/server/player.h>
